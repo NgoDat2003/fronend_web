@@ -1,0 +1,127 @@
+.product {
+  padding-top: 160px;
+  background-color: #f5f5f5;
+  .container {
+    max-width: 1200px;
+    margin: 0 auto 0;
+    .product_image {
+      background-color: #fff;
+      padding: 16px;
+      .product_image_main {
+        margin-bottom: 12px;
+        border: 1px solid rgb(235, 235, 240);
+        padding: 6px 0;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+      .product_image_list {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        .product_image_item {
+          padding: 5px;
+          border: 1px solid rgb(235, 235, 240);
+          img {
+            width: 47px;
+            height: auto;
+            object-fit: cover;
+            border: 2px solid transparent;
+          }
+        }
+        .active {
+          border: 2px solid rgb(10, 104, 255);
+        }
+      }
+    }
+    .product_info {
+      background-color: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 6px 12px;
+      height: 100%;
+
+      .product_name {
+        font-size: 24px;
+        line-height: 1.33;
+        margin-bottom: 8px;
+      }
+      .product_description {
+        font-size: 16px;
+        color: rgb(130, 134, 158);
+        font-weight: 400;
+        line-height: 16px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        span {
+          cursor: pointer;
+          color: rgb(20, 53, 195);
+        }
+      }
+      .social {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        margin-right: 4px;
+        font-size: 14px;
+        line-height: 150%;
+        font-weight: 500;
+        .product_sold {
+          font-size: 14px;
+          line-height: 24px;
+          color: rgb(120, 120, 120);
+        }
+      }
+      .product_price {
+        color: rgb(20, 53, 195);
+        font-weight: 700;
+        font-size: 20px;
+        line-height: 28px;
+      }
+      .product_number {
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 150%;
+        span {
+          padding-right: 6px;
+        }
+      }
+      .product_button {
+        button {
+          width: 100%;
+          height: 46px;
+          margin: 0px;
+          font-weight: 500;
+          line-height: 24px;
+          font-size: 16px;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: .3s;
+          border: 1px solid transparent;
+        }
+        .btn-primary{
+            background-color:#1435c3;
+            color:#fff;
+            &:hover{
+                background-color:#0a68ff;
+            }
+        }
+        .btn-secondary{
+            background-color:#fff;
+            color:#1435c3;
+            border:1px solid #1435c3;
+            &:hover{
+                background-color:#f5f5f5;
+            }
+        }
+      }
+    }
+  }
+}
