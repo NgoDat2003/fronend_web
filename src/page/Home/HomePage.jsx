@@ -8,7 +8,19 @@ import {
 } from "@ant-design/icons";
 import product from "../../image/product.png";
 import { NavLink } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 const HomePage = () => {
+  // const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const checkLogin = useSelector((state) => state.user.isAuth);
+  useEffect(() => {
+    // console.log(checkLogin);
+    // if (!checkLogin) {
+    //   navigate("login");
+    // }
+  }, []);
   const items = [
     {
       label: "Laptop",
@@ -131,28 +143,44 @@ const HomePage = () => {
             <Row gutter={16}>
               <Col span={8} className="product_card">
                 <NavLink to="/product">
-                <Card
-                  hoverable
-                  // style={{ height: "100%" , width: "100%"}}
-                  cover={<img alt="example" src={product}  className="product_card_img"/>}
-                >
-                  <div className="product_title">
-                    <h3 className="product_hang>">MSI</h3>
-                    <div className="product_name">Laptop MSI Cyborg 15 A12VE-412VN (i5-12450H) (Đen)</div>
-                    <div className="product_price">20.990.000 ₫</div>
-                  </div>
-                </Card>
+                  <Card
+                    hoverable
+                    // style={{ height: "100%" , width: "100%"}}
+                    cover={
+                      <img
+                        alt="example"
+                        src={product}
+                        className="product_card_img"
+                      />
+                    }
+                  >
+                    <div className="product_title">
+                      <h3 className="product_hang>">MSI</h3>
+                      <div className="product_name">
+                        Laptop MSI Cyborg 15 A12VE-412VN (i5-12450H) (Đen)
+                      </div>
+                      <div className="product_price">20.990.000 ₫</div>
+                    </div>
+                  </Card>
                 </NavLink>
               </Col>
               <Col span={8} className="product_card">
                 <Card
                   hoverable
                   // style={{ height: "100%" , width: "100%"}}
-                  cover={<img alt="example" src={product}  className="product_card_img"/>}
+                  cover={
+                    <img
+                      alt="example"
+                      src={product}
+                      className="product_card_img"
+                    />
+                  }
                 >
                   <div className="product_title">
                     <h3 className="product_hang>">MSI</h3>
-                    <div className="product_name">Laptop MSI Cyborg 15 A12VE-412VN (i5-12450H) (Đen)</div>
+                    <div className="product_name">
+                      Laptop MSI Cyborg 15 A12VE-412VN (i5-12450H) (Đen)
+                    </div>
                     <div className="product_price">20.990.000 ₫</div>
                   </div>
                 </Card>
@@ -161,11 +189,19 @@ const HomePage = () => {
                 <Card
                   hoverable
                   // style={{ height: "100%" , width: "100%"}}
-                  cover={<img alt="example" src={product}  className="product_card_img"/>}
+                  cover={
+                    <img
+                      alt="example"
+                      src={product}
+                      className="product_card_img"
+                    />
+                  }
                 >
                   <div className="product_title">
                     <h3 className="product_hang>">MSI</h3>
-                    <div className="product_name">Laptop MSI Cyborg 15 A12VE-412VN (i5-12450H) (Đen)</div>
+                    <div className="product_name">
+                      Laptop MSI Cyborg 15 A12VE-412VN (i5-12450H) (Đen)
+                    </div>
                     <div className="product_price">20.990.000 ₫</div>
                   </div>
                 </Card>
@@ -174,11 +210,19 @@ const HomePage = () => {
                 <Card
                   hoverable
                   // style={{ height: "100%" , width: "100%"}}
-                  cover={<img alt="example" src={product}  className="product_card_img"/>}
+                  cover={
+                    <img
+                      alt="example"
+                      src={product}
+                      className="product_card_img"
+                    />
+                  }
                 >
                   <div className="product_title">
                     <h3 className="product_hang>">MSI</h3>
-                    <div className="product_name">Laptop MSI Cyborg 15 A12VE-412VN (i5-12450H) (Đen)</div>
+                    <div className="product_name">
+                      Laptop MSI Cyborg 15 A12VE-412VN (i5-12450H) (Đen)
+                    </div>
                     <div className="product_price">20.990.000 ₫</div>
                   </div>
                 </Card>
@@ -187,11 +231,19 @@ const HomePage = () => {
                 <Card
                   hoverable
                   // style={{ height: "100%" , width: "100%"}}
-                  cover={<img alt="example" src={product}  className="product_card_img"/>}
+                  cover={
+                    <img
+                      alt="example"
+                      src={product}
+                      className="product_card_img"
+                    />
+                  }
                 >
                   <div className="product_title">
                     <h3 className="product_hang>">MSI</h3>
-                    <div className="product_name">Laptop MSI Cyborg 15 A12VE-412VN (i5-12450H) (Đen)</div>
+                    <div className="product_name">
+                      Laptop MSI Cyborg 15 A12VE-412VN (i5-12450H) (Đen)
+                    </div>
                     <div className="product_price">20.990.000 ₫</div>
                   </div>
                 </Card>

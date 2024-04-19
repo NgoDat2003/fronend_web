@@ -1,4 +1,4 @@
-.modal_login {
+.modal_register {
   position: fixed;
   inset: 0;
   z-index: 1000;
@@ -7,18 +7,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  .login {
+  .register {
     background-color: #fff;
     margin: -20px -24px -32px;
     width: 800px;
-    height: 500px;
-    max-height: 500px;
     border-radius: 8px;
-    .login_row {
+    .register_row {
       height: 100%;
       width: 100%;
     }
-    .login_left {
+    .register_left {
       height: 100%;
       padding: 40px 45px;
       h3 {
@@ -30,8 +28,8 @@
         margin: 0px;
         font-size: 15px;
       }
-      .login_form {
-        .login_form_item {
+      .register_form {
+        .register_form_item {
           margin: 20px 0px;
           label {
             display: block;
@@ -44,7 +42,7 @@
             font-size: 16px;
           }
         }
-        .btn_login {
+        .btn_register {
           margin: 30px 0px 0px;
           outline: none;
           border-radius: 4px;
@@ -59,17 +57,7 @@
             background: rgb(255, 66, 78, 0.8);
           }
         }
-        .login_forgot{
-          text-align: right;
-          color: #1677ff;
-          font-size: 16px;
-          &:hover{
-            text-decoration: underline;
-            opacity: 0.8;
-            cursor: pointer;
-          }
-        }
-        .login_form_bottom {
+        .register_form_bottom {
           display: flex;
           justify-content: space-between;
           align-items: center;
@@ -82,20 +70,19 @@
             display: flex;
             align-items: center;
             gap: 4px;
-            &:hover {
+            &:hover{
               opacity: 0.8;
             }
           }
         }
       }
     }
-    .login_right {
+    .register_right {
       background: linear-gradient(
         136deg,
         rgb(240, 248, 255) -1%,
         rgb(219, 238, 255) 85%
       );
-      height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
