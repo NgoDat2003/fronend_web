@@ -1,4 +1,4 @@
-import { Card, Col, Menu, Row } from "antd";
+import { Card, Col, Menu, Row,Pagination } from "antd";
 import CaroselHomePage from "./CaroselHomePage";
 import "./HomePage.scss";
 import {
@@ -6,21 +6,32 @@ import {
   MailOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import product from "../../image/product.png";
 import { NavLink } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { callGetProducts } from "../../service/api";
 const HomePage = () => {
-  // const dispatch = useDispatch();
   const navigate = useNavigate();
   const checkLogin = useSelector((state) => state.user.isAuth);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(9);
+  const [products, setProducts] = useState([]);
+  const [total, setTotal] = useState(0);
+  const apiUrl = import.meta.env.VITE_APP_BE_API_URL;
+  const getProduct = async () => {
+    // Gọi API để lấy thông tin sản phẩm\
+    let response = await callGetProducts(limit, currentPage);
+    // Xử lý dữ liệu trả về
+    if (response && +response.EC === 0) {
+      setProducts(response.DT.data);
+      setTotal(response.DT.totalPage);
+    }
+  };
   useEffect(() => {
-    // console.log(checkLogin);
-    // if (!checkLogin) {
-    //   navigate("login");
-    // }
-  }, []);
+    getProduct();
+  }, [currentPage,limit,total]);
+  // const dispatch = useDispatch();
   const items = [
     {
       label: "Laptop",
@@ -126,6 +137,18 @@ const HomePage = () => {
       ],
     },
   ];
+  const onChange = (page) => {
+    setCurrentPage(page);
+    // getProduct();
+  };
+  const onShowSizeChange = (current, size) => {
+    console.log("Current page:", current);
+    console.log("New page size:", size);
+    // Update the page size state
+    // setPageSize(size);
+    // Fetch new data based on the new page size
+    // fetchProducts(current, size);
+  };
   const onClick = (e) => {
     console.log("click", e);
   };
@@ -139,114 +162,38 @@ const HomePage = () => {
           <Col span={7}>
             <Menu onClick={onClick} mode="inline" items={items} />
           </Col>
-          <Col span={24}>
-            <Row gutter={16}>
-              <Col span={8} className="product_card">
-                <NavLink to="/product">
-                  <Card
-                    hoverable
-                    // style={{ height: "100%" , width: "100%"}}
-                    cover={
-                      <img
-                        alt="example"
-                        src={product}
-                        className="product_card_img"
-                      />
-                    }
-                  >
-                    <div className="product_title">
-                      <h3 className="product_hang>">MSI</h3>
-                      <div className="product_name">
-                        Laptop MSI Cyborg 15 A12VE-412VN (i5-12450H) (Đen)
+          <Col span={17}>
+            <Row gutter={[16, 8]}>
+              {products.map((item, index) => (
+                <Col span={8} className="product_card" key={index}>
+                  <NavLink to={`/product/${item.id}`} className="product_link">
+                    <Card
+                      hoverable
+                      // style={{ height: "100%" , width: "100%"}}
+                      cover={
+                        <img
+                          alt="example"
+                          src={apiUrl + item.mainImage}
+                          className="product_card_img"
+                        />
+                      }
+                    >
+                      <div className="product_title">
+                        <h3 className="product_hang>">
+                          {item.screenBrand ||
+                            item.laptopBrand ||
+                            item.audioBrand ||
+                            item.pcBrand}
+                        </h3>
+                        <div className="product_name">{item.productName}</div>
+                        <div className="product_price">{item.price} ₫</div>
                       </div>
-                      <div className="product_price">20.990.000 ₫</div>
-                    </div>
-                  </Card>
-                </NavLink>
-              </Col>
-              <Col span={8} className="product_card">
-                <Card
-                  hoverable
-                  // style={{ height: "100%" , width: "100%"}}
-                  cover={
-                    <img
-                      alt="example"
-                      src={product}
-                      className="product_card_img"
-                    />
-                  }
-                >
-                  <div className="product_title">
-                    <h3 className="product_hang>">MSI</h3>
-                    <div className="product_name">
-                      Laptop MSI Cyborg 15 A12VE-412VN (i5-12450H) (Đen)
-                    </div>
-                    <div className="product_price">20.990.000 ₫</div>
-                  </div>
-                </Card>
-              </Col>
-              <Col span={8} className="product_card">
-                <Card
-                  hoverable
-                  // style={{ height: "100%" , width: "100%"}}
-                  cover={
-                    <img
-                      alt="example"
-                      src={product}
-                      className="product_card_img"
-                    />
-                  }
-                >
-                  <div className="product_title">
-                    <h3 className="product_hang>">MSI</h3>
-                    <div className="product_name">
-                      Laptop MSI Cyborg 15 A12VE-412VN (i5-12450H) (Đen)
-                    </div>
-                    <div className="product_price">20.990.000 ₫</div>
-                  </div>
-                </Card>
-              </Col>
-              <Col span={8} className="product_card">
-                <Card
-                  hoverable
-                  // style={{ height: "100%" , width: "100%"}}
-                  cover={
-                    <img
-                      alt="example"
-                      src={product}
-                      className="product_card_img"
-                    />
-                  }
-                >
-                  <div className="product_title">
-                    <h3 className="product_hang>">MSI</h3>
-                    <div className="product_name">
-                      Laptop MSI Cyborg 15 A12VE-412VN (i5-12450H) (Đen)
-                    </div>
-                    <div className="product_price">20.990.000 ₫</div>
-                  </div>
-                </Card>
-              </Col>
-              <Col span={8} className="product_card">
-                <Card
-                  hoverable
-                  // style={{ height: "100%" , width: "100%"}}
-                  cover={
-                    <img
-                      alt="example"
-                      src={product}
-                      className="product_card_img"
-                    />
-                  }
-                >
-                  <div className="product_title">
-                    <h3 className="product_hang>">MSI</h3>
-                    <div className="product_name">
-                      Laptop MSI Cyborg 15 A12VE-412VN (i5-12450H) (Đen)
-                    </div>
-                    <div className="product_price">20.990.000 ₫</div>
-                  </div>
-                </Card>
+                    </Card>
+                  </NavLink>
+                </Col>
+              ))}
+              <Col span={24} className="product_pagination">
+                <Pagination current={currentPage} total={total*limit}  pageSize={limit} onChange={onChange} onShowSizeChange={onShowSizeChange}/>
               </Col>
             </Row>
           </Col>

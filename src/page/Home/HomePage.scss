@@ -11,6 +11,7 @@
   .main_home {
     margin-top: 20px;
     .product_card {
+      min-height: 456px;
       overflow: hidden;
       img {
         margin: 5%;
@@ -46,8 +47,14 @@
         .product_name {
           font-size: 14px;
           font-weight: 400;
-          line-height: 1rem;
-          display: inline;
+          line-height: 20px;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          height: 60px;
+          
         }
         .product_price{
           margin-top: 25px;
@@ -65,8 +72,12 @@
       
         }
       }
-      .product_hang {
-      }
+    }
+    .product_pagination{
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      margin-bottom: 20px;
     }
   }
 }

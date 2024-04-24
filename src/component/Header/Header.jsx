@@ -1,60 +1,49 @@
-import { Col, Dropdown, Input, Row, Space,message } from "antd";
+import { Col, Dropdown, Input, Row, Space, message } from "antd";
 import "./Header.scss";
 import { NavLink } from "react-router-dom";
 import { DownOutlined } from "@ant-design/icons";
 import logo from "../../image/logo.png";
 import Search from "antd/es/input/Search";
-import { FaUser, FaShoppingCart } from "react-icons/fa";
+import { FaUser, FaShoppingCart,FaRegUserCircle } from "react-icons/fa";
+import { MdOutlineShoppingCart } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { callLogout } from "../../service/api";
 import { logout } from "../../redux/UserSlice";
 function Header() {
+  
   const dispatch = useDispatch();
 
   const handleLogout = async () => {
     let res = await callLogout();
-    if(res && +res.EC === 0){
+    if (res && +res.EC === 0) {
       message.success("Đăng xuất thành công");
-      dispatch(logout())
-    }else{
+      dispatch(logout());
+    } else {
       message.error("Đăng xuất thất bại");
     }
-
-  }
+  };
   const user = useSelector((state) => state.user);
-  const items = [
+  const isAuth = user.isAuth;
+  const image = user.user?.image;
+  let items = [
     {
       key: "1",
-      label: <NavLink to="/login">Đăng nhập</NavLink>,
-    },
-    {
-      key: "2",
-      label: <NavLink to="/register">Đăng ký</NavLink>,
-    },
-  ];
-  const items2 = [
-    {
-      key: "1",
-      label: <NavLink to="/login">Thông tin cá nhân</NavLink>,
+      label: <NavLink to="/profile">Thông tin cá nhân</NavLink>,
     },
     {
       key: "2",
       label: <div onClick={handleLogout}>Đăng xuất</div>,
     },
-  ]
+  ];
   useEffect(() => {
-    console.log(user);
-    if(user && user.user?.roleId === 1){
-      items2.push({
+    if (user && user.user?.roleId === 1) {
+      items.unshift({
         key: "3",
-        label: <NavLink to="/admin">Quản trị</NavLink>,
-      })
+        label: <NavLink to="/admin">Quản Lý</NavLink>,
+      });
     }
-    if(user && user.isAuth){
-      items.splice(0,2);
-      items.push(...items2);
-    }
+
   }, [user]);
 
   const category_header = ["Laptop AI", "macbook"];
@@ -72,32 +61,34 @@ function Header() {
           <Col span={14}>
             <div className="header_center">
               <Search
-                placeholder="input search text"
+                placeholder="Nhập thông tin sản phẩm cần tìm kiếm ...."
                 enterButton
                 size="large"
               />
-              <ul className="header_category">
-                {category_header.map((item, index) => (
-                  <li key={index}>
-                    <NavLink to="/" className="header_item">
-                      {item}
-                    </NavLink>
-                  </li>
-                ))}
-              </ul>
             </div>
           </Col>
           <Col span={6} className="header_right">
-            <Dropdown menu={{ items }} trigger={["click"]}>
-              <Space style={{ fontSize: "18px" }}>
-                <FaUser />
-                {user.isAuth ? user.user?.lastName : "Tài khoản"}
-                <DownOutlined />
-              </Space>
-            </Dropdown>
+            {isAuth ? (
+              <Dropdown menu={{ items }} trigger={["click"]} className="header_right-dropdown">
+                <Space className="header_right_space">
+                  {console.log(import.meta.env.VITE_APP_BE_API_URL+image)}
+                  {image ? (<img style={{height:36,width:36,borderRadius:20}} src={import.meta.env.VITE_APP_BE_API_URL+image}/>) : <FaUser className="header_right-icon" />}
+                  {user.isAuth ? <p className="text">Xin chào,<br />{user.user?.lastName}</p>: <p className="text">Tài khoản</p>}
+                </Space>
+              </Dropdown>
+            ) : (
+              <div className="header-option">
+                <FaRegUserCircle  className="header-option-icon" />
+                <div className="list-option">
+                  <NavLink to="/login" className="text">Đăng nhập</NavLink>
+                  <NavLink to="/register" className="text">Đăng ký</NavLink>
+                </div>
+              </div>
+            )}
+
             <div className="header_cart">
-              <FaShoppingCart />
-              Giỏ Hàng
+              <MdOutlineShoppingCart className="header_cart-icon"/>
+              <p>Giỏ Hàng</p>
             </div>
           </Col>
         </Row>

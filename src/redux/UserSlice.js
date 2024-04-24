@@ -7,6 +7,8 @@ const initialState = {
     lastName: "",
     firstName: "",
     image: "",
+    address: "",
+    phoneNumber: "",
   },
 };
 export const userSlice = createSlice({

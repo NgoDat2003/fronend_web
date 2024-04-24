@@ -1,6 +1,5 @@
 import axios from "axios";
-const baseURL =import.meta.env.REACT_APP_API_URL || "http://localhost:8080";
-console.log(baseURL);
+const baseURL =import.meta.env.VITE_APP_BE_API_URL || "http://localhost:8080";
 const instance = axios.create({
   baseURL: baseURL,
   withCredentials: true,

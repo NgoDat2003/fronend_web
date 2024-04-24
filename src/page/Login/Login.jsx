@@ -25,7 +25,6 @@ function Login() {
     if(values.username && values.password){
       let { username, password} = values;
       let res = await callLogin(username, password);
-      console.log("res login: ", res);
       if (res && +res.EC === 0) {
         dispatch(login(res.DT));
         message.success(res.EM);
