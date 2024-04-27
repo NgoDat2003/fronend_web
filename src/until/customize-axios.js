@@ -4,9 +4,9 @@ const instance = axios.create({
   baseURL: baseURL,
   withCredentials: true,
 });
-// instance.defaults.headers.common = {
-//   Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-// };
+instance.defaults.headers.common = {
+  Authorization: `Bearer ${localStorage.getItem("token")}`,
+};
 const NO_RETRY_HEADER = "x-no-retry";
 // const handleRefeshToken = async () => {
 //   let res = await instance.get("/api/v1/auth/refresh");

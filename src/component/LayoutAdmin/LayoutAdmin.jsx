@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -18,14 +18,31 @@ import { NavLink } from "react-router-dom";
 import "./LayoutAdmin.scss";
 import AdminMain from "../../page/AdminMain/AdminMain";
 import AdminUser from "../../page/AdminUser/AdminUser";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 const { Header, Sider, Content } = Layout;
 
 const LayoutAdmin = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKey, setSelectedKey] = useState("1");
+  // const isAuth = useDispatch(state=>state.user.isAuth);
+  // const role = useDispatch(state=>state.user.user);
+  const isAuth = useSelector((state) => state.user.isAuth);
+  const role = useSelector((state) => state.user.user.roleId);
+  const navigate = useNavigate();
   const handleMenuClick = (e) => {
     setSelectedKey(e.key);
   };
+  useEffect(() => {
+    if (!isAuth) {
+      navigate("/");
+    }
+    console.log(role);
+    if(role !== 1){
+      navigate("/");
+    }
+  }, [isAuth]);
+
 
   const renderContent = () => {
     switch (selectedKey) {
@@ -109,7 +126,7 @@ const LayoutAdmin = () => {
             style={{
               margin: "24px 16px",
               padding: 24,
-              minHeight:"80vh",
+              minHeight: "80vh",
             }}
           >
             {renderContent()}

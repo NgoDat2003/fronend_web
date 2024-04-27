@@ -1,11 +1,6 @@
 import "./Product.scss";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import product1 from "../../image/product1.png";
-import product2 from "../../image/product2.png";
-import product3 from "../../image/product3.png";
-import product4 from "../../image/product4.png";
-
 import { Col, Image, InputNumber, Rate, Row } from "antd";
 import { callGetProductByID } from "../../service/api";
 function Product() {

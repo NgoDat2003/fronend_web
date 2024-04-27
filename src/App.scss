@@ -56,3 +56,23 @@ body,
     border-color: #d39e00;
   }
 }
+.btn.btn_success {
+  color: #fff;
+  background-color: #198754;
+  border-color: #198754;
+  &:hover {
+    color: #fff;
+    background-color: #157347;
+    border-color: #146c43;
+}
+}
+.btn.btn_info {
+  color: #000;
+  background-color: #0dcaf0;
+  border-color: #0dcaf0;
+  &:hover {
+    color: #000;
+    background-color: #00b8d8;
+    border-color: #00b8d8;
+  }
+}
