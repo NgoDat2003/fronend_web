@@ -1,0 +1,16 @@
+.container_admin{
+    .manage_button{
+        margin-top: 20px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .container_admin_header{
+        display: flex   ;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+
+    }
+}

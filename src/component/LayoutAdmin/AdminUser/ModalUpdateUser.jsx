@@ -14,7 +14,7 @@ import {
   callGetAllRole,
   callUpdateAccount,
   callUploadFileUser,
-} from "../../service/api";
+} from "../../../service/api";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 
 const getBase64 = (img, callback) => {
@@ -58,7 +58,6 @@ function ModalUpdateUser({ visibleUpdateUser, setVisibleUpdateUser, user,handleR
       image,
       user.id
     );
-    console.log(image);
     if (res && +res.EC === 0) {
       form.resetFields();
       message.success("Update user successfully");
@@ -73,8 +72,6 @@ function ModalUpdateUser({ visibleUpdateUser, setVisibleUpdateUser, user,handleR
     form
       .validateFields()
       .then((values) => {
-        // console.log(values);
-
         handleUpdateUser(values);
       })
       .catch((info) => {

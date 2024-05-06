@@ -29,7 +29,6 @@ function Register() {
         return;
       }
       let res = await callRegister(username, firstname, lastname, password);
-      console.log(res);
       if (res && +res.EC === 0) {
         message.success(res.EM);
         navigate("/login");

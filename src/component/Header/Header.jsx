@@ -1,18 +1,36 @@
-import { Col, Dropdown, Input, Row, Space, message } from "antd";
+import {
+  Col,
+  Dropdown,
+  Input,
+  Row,
+  Space,
+  message,
+  Popover,
+  Badge,
+  Menu,
+} from "antd";
 import "./Header.scss";
-import { NavLink } from "react-router-dom";
-import { DownOutlined } from "@ant-design/icons";
+import { NavLink, useNavigate } from "react-router-dom";
 import logo from "../../image/logo.png";
 import Search from "antd/es/input/Search";
-import { FaUser, FaShoppingCart,FaRegUserCircle } from "react-icons/fa";
+import {
+  FaUser,
+  FaShoppingCart,
+  FaRegUserCircle,
+  FaRegCalendarCheck,
+} from "react-icons/fa";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { callLogout } from "../../service/api";
+import { useEffect, useState } from "react";
+import { callGetCategories, callLogout } from "../../service/api";
 import { logout } from "../../redux/UserSlice";
+import CartPopover from "../CartPopover/CartPopover";
+import { GrUserManager } from "react-icons/gr";
 function Header() {
-  
+  const [listCategory, setListCategory] = useState([]);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const cart = useSelector((state) => state.order.orders); // Replace with your actual selector
 
   const handleLogout = async () => {
     let res = await callLogout();
@@ -23,30 +41,78 @@ function Header() {
       message.error("Đăng xuất thất bại");
     }
   };
+
+  const handleNavigation = (path, menu) => {
+    navigate(path, { state: { selectedMenu: menu } });
+  };
+  const [content, setContent] = useState(
+    <div className="content_list">
+      <NavLink to="/profile" className="content_item">
+        <FaRegUserCircle />
+        <span>Thông tin cá nhân</span>
+      </NavLink>
+      <div
+        onClick={() => handleNavigation("/profile", "Đơn hàng của tôi")}
+        className="content_item"
+      >
+        <FaRegCalendarCheck />
+        <span>Quản lý đơn hàng</span>
+      </div>
+      <button className="btn btn_primary" onClick={handleLogout}>
+        Đăng xuất
+      </button>
+    </div>
+  );
   const user = useSelector((state) => state.user);
   const isAuth = user.isAuth;
   const image = user.user?.image;
-  let items = [
-    {
-      key: "1",
-      label: <NavLink to="/profile">Thông tin cá nhân</NavLink>,
-    },
-    {
-      key: "2",
-      label: <div onClick={handleLogout}>Đăng xuất</div>,
-    },
-  ];
+
   useEffect(() => {
     if (user && user.user?.roleId === 1) {
-      items.unshift({
-        key: "3",
-        label: <NavLink to="/admin">Quản Lý</NavLink>,
-      });
+      setContent(
+        <div className="content_list">
+          <NavLink to="/admin" className="content_item">
+            <GrUserManager />
+            <span>Quản Lý</span>
+          </NavLink>
+          <NavLink to="/profile" className="content_item">
+            <FaRegUserCircle />
+            <span>Thông tin cá nhân</span>
+          </NavLink>
+          <div
+            onClick={() => handleNavigation("/profile", "Đơn hàng của tôi")}
+            className="content_item"
+          >
+            <FaRegCalendarCheck />
+            <span>Quản lý đơn hàng</span>
+          </div>
+          <button className="btn btn_primary" onClick={handleLogout}>
+            Đăng xuất
+          </button>
+        </div>
+      );
     }
-
   }, [user]);
-
-  const category_header = ["Laptop AI", "macbook"];
+  const handleGetCategory = async () => {
+    let response = await callGetCategories();
+    if (response && +response.EC === 0) {
+      setListCategory(response.DT);
+    }
+  };
+  useEffect(() => {
+    handleGetCategory();
+  }, []);
+  const title = (
+    <div className="title">
+      <div className="title_avatar">
+        <img src={import.meta.env.VITE_APP_BE_API_URL + image} alt="" />
+      </div>
+      <div className="title_info">
+        <p className="title_name">{user.user?.lastName}</p>
+        <p className="title_email">{user.user?.email}</p>
+      </div>
+    </div>
+  );
   return (
     <div className="header">
       <div className="header_container">
@@ -69,26 +135,66 @@ function Header() {
           </Col>
           <Col span={6} className="header_right">
             {isAuth ? (
-              <Dropdown menu={{ items }} trigger={["click"]} className="header_right-dropdown">
+              <Popover
+                content={content}
+                trigger="hover"
+                title={title}
+                overlayStyle={{ width: 250 }}
+              >
                 <Space className="header_right_space">
-                  {console.log(import.meta.env.VITE_APP_BE_API_URL+image)}
-                  {image ? (<img style={{height:36,width:36,borderRadius:20}} src={import.meta.env.VITE_APP_BE_API_URL+image}/>) : <FaUser className="header_right-icon" />}
-                  {user.isAuth ? <p className="text">Xin chào,<br />{user.user?.lastName}</p>: <p className="text">Tài khoản</p>}
+                  {image ? (
+                    <img
+                      style={{ height: 36, width: 36, borderRadius: 20 }}
+                      src={import.meta.env.VITE_APP_BE_API_URL + image}
+                    />
+                  ) : (
+                    <FaUser className="header_right-icon" />
+                  )}
+                  {user.isAuth ? (
+                    <p className="text">
+                      Xin chào,
+                      <br />
+                      {user.user?.lastName}
+                    </p>
+                  ) : (
+                    <p className="text">Tài khoản</p>
+                  )}
                 </Space>
-              </Dropdown>
+              </Popover>
             ) : (
               <div className="header-option">
-                <FaRegUserCircle  className="header-option-icon" />
+                <FaRegUserCircle className="header-option-icon" />
                 <div className="list-option">
-                  <NavLink to="/login" className="text">Đăng nhập</NavLink>
-                  <NavLink to="/register" className="text">Đăng ký</NavLink>
+                  <NavLink to="/login" className="text">
+                    Đăng nhập
+                  </NavLink>
+                  <NavLink to="/register" className="text">
+                    Đăng ký
+                  </NavLink>
                 </div>
               </div>
             )}
 
-            <div className="header_cart">
-              <MdOutlineShoppingCart className="header_cart-icon"/>
-              <p>Giỏ Hàng</p>
+            <Popover content={<CartPopover />} trigger="hover">
+              <div className="header_cart" onClick={() => navigate("/cart")}>
+                <Badge count={cart.length} showZero>
+                  <MdOutlineShoppingCart className="header_cart-icon" />
+                </Badge>
+                <p>Giỏ Hàng</p>
+              </div>
+            </Popover>
+          </Col>
+          <Col offset={4}>
+            <div className="header__category">
+              {listCategory.map((item) => (
+                <NavLink
+                  to={`/category/${item.id}`}
+                  className="header_category"
+                  activeClassName="active"
+                >
+                  {item.categoryName}
+                </NavLink>
+              ))}
             </div>
           </Col>
         </Row>

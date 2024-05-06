@@ -25,6 +25,11 @@ export const userSlice = createSlice({
       state.isAuth = false;
       state.user = {};
     },
+    loginFail: (state) => {
+      state.isLoading = false;
+      state.isAuth = false;
+      state.user = {};
+    }
   },
 });
 

@@ -15,7 +15,7 @@ import {
   callCreateUser,
   callGetAllRole,
   callUploadFileUser,
-} from "../../service/api";
+} from "../../../service/api";
 const getBase64 = (img, callback) => {
   const reader = new FileReader();
   reader.addEventListener("load", () => callback(reader.result));
@@ -110,7 +110,6 @@ function ModalCreateUser({ visible, setVisible,handleRefesh }) {
   const handleUpload = async ({ file }) => {
     let res = await callUploadFileUser(file);
     if (res && +res.EC === 0) {
-      console.log(res.DT);
       setImageUrl("/user/" + res.DT.filename);
     }
   };

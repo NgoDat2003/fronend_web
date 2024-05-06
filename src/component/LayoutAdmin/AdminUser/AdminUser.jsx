@@ -1,4 +1,4 @@
-import { Table, message } from "antd";
+import { Table, message, Input } from "antd";
 import { MdDelete } from "react-icons/md";
 import { BsPencilSquare } from "react-icons/bs";
 import { TinyColor } from "@ctrl/tinycolor";
@@ -6,13 +6,14 @@ import { Button, ConfigProvider, Space } from "antd";
 import { FiRefreshCcw } from "react-icons/fi";
 import { SiMicrosoftexcel } from "react-icons/si";
 import { IoMdPersonAdd } from "react-icons/io";
-import { callDeleteUser, callGetUser } from "../../service/api";
+import { callDeleteUser, callGetUser, callGetUserBySearch } from "../../../service/api";
 import { useEffect, useState } from "react";
 import { render } from "react-dom";
 import "./AdminUser.scss";
 import ModalCreateUser from "./ModalCreateUser";
 import ModalUpdateUser from "./ModalUpdateUser";
 import { utils, writeFile } from "xlsx";
+const { Search } = Input;
 function AdminUser() {
   const [limit, setLimit] = useState(4);
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,9 +22,10 @@ function AdminUser() {
   const [visible, setVisible] = useState(false);
   const [visibleUpdateUser, setVisibleUpdateUser] = useState(false);
   const [user, setUser] = useState({});
-  const [visibleReadUser, setVisibleReadUser] = useState(false);
+  const [sort, setSort] = useState({ field: "updatedAt", order: "desc" });
+  const [search, setSearch] = useState("");
   const getUser = async () => {
-    let res = await callGetUser(limit, currentPage);
+    let res = await callGetUser(limit, currentPage, sort.field, sort.order);
     if (res && +res.EC === 0) {
       setTotal(res.DT.totalItems);
       setData(res.DT.data);
@@ -31,7 +33,7 @@ function AdminUser() {
   };
   useEffect(() => {
     getUser();
-  }, [limit, currentPage]);
+  }, [limit, currentPage, sort]);
   const handleEdit = (record) => {
     setVisibleUpdateUser(true);
     setUser(record);
@@ -41,7 +43,6 @@ function AdminUser() {
     setCurrentPage(1);
   };
   const handleDeleleUser = async (id) => {
-    console.log(id);
     let res = await callDeleteUser(id);
     if (res && +res.EC === 0) {
       message.success(res.EM);
@@ -54,34 +55,50 @@ function AdminUser() {
     {
       title: "Email",
       dataIndex: "email",
-      sorter: (a, b) => a.email.localeCompare(b.email),
+      sorter: true,
       render: (text, record) => <a>{text}</a>,
     },
     {
       title: "First Name",
       dataIndex: "firstName",
-      sorter: (a, b) => a.firstName.localeCompare(b.firstName),
+      sorter: true,
     },
     {
       title: "Last Name",
       dataIndex: "lastName",
-      sorter: (a, b) => a.lastName.localeCompare(b.lastName),
+      sorter: true,
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      sorter: (a, b) => a.address.localeCompare(b.address),
+      title: "isAdmin",
+      // dataIndex: "role",
+      sorter: (a, b) => a.Role.roleName - b.Role.roleName,
+      render: (record) => {
+        return record?.Role?.roleName === "Admin" ? "YES" : "NO";
+      },
     },
     {
-      title: "Role",
-      dataIndex: "Role",
-      render: (role) => role.roleName,
-      sorter: (a, b) => a.Role.roleName.localeCompare(b.Role.roleName),
+      title: "Create At",
+      dataIndex: "createdAt",
+      sorter: true,
+      render: (date) => {
+        const d = new Date(date);
+        return `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()} ${d.getDate()}/${
+          d.getMonth() + 1
+        }/${d.getFullYear()}`;
+      },
     },
     {
-      title: "Phone",
-      dataIndex: "phoneNumber",
-      sorter: (a, b) => a.phoneNumber.localeCompare(b.phoneNumber),
+      title: "Update At",
+      dataIndex: "updatedAt",
+      sorter: true,
+      sortDirections: ["descend", "ascend"],
+      defaultSortOrder: "descend",
+      render: (date) => {
+        const d = new Date(date);
+        return `${d.getHours()}:${d.getMinutes()}:${d.getSeconds()} ${d.getDate()}/${
+          d.getMonth() + 1
+        }/${d.getFullYear()}`;
+      },
     },
     {
       title: "Action",
@@ -110,30 +127,42 @@ function AdminUser() {
     utils.book_append_sheet(wb, ws, "Sheet1");
 
     writeFile(wb, fileName);
-    
   };
   const onChange = (pagination, filters, sorter, extra) => {
     setCurrentPage(pagination.current);
     setLimit(pagination.pageSize);
+    if (sorter?.order === undefined) {
+      // If the order is undefined, reset the sort state
+      setSort({ field: "", order: "" });
+    } else {
+      // Otherwise, update the sort state with the new field and order
+      setSort({
+        field: sorter.field,
+        order: sorter.order === "ascend" ? "asc" : "desc",
+      });
+    }
   };
   return (
     <div className="container_admin">
       <h1>Quản lý người dùng</h1>
-      <div className="manage_button">
-        <button className="btn btn_info" onClick={() => setVisible(true)}>
-          <IoMdPersonAdd />
-          <span style={{ marginLeft: 4 }}>Thêm người dùng</span>
-        </button>
-        <button
-          className=" btn btn_success"
-          onClick={() => exportToExcel(data, "users.xlsx")}
-        >
-          <SiMicrosoftexcel />
-          <span style={{ marginLeft: 4 }}>Export Excel</span>
-        </button>
-        <button className="btn_info btn" onClick={() => handleRefesh()}>
-          <FiRefreshCcw /> <span style={{ marginLeft: 4 }}>Refresh</span>
-        </button>
+      <div className="container_admin_header">
+        <div className="manage_button">
+          <button className="btn btn_info" onClick={() => setVisible(true)}>
+            <IoMdPersonAdd />
+            <span style={{ marginLeft: 4 }}>Thêm người dùng</span>
+          </button>
+          <button
+            className=" btn btn_success"
+            onClick={() => exportToExcel(data, "users.xlsx")}
+          >
+            <SiMicrosoftexcel />
+            <span style={{ marginLeft: 4 }}>Export Excel</span>
+          </button>
+          <button className="btn_info btn" onClick={() => handleRefesh()}>
+            <FiRefreshCcw /> <span style={{ marginLeft: 4 }}>Refresh</span>
+          </button>
+        </div>
+      
       </div>
       <Table
         columns={columns}

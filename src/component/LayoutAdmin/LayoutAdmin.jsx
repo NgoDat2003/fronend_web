@@ -16,10 +16,12 @@ import { IoHomeOutline } from "react-icons/io5";
 import { TiShoppingCart } from "react-icons/ti";
 import { NavLink } from "react-router-dom";
 import "./LayoutAdmin.scss";
-import AdminMain from "../../page/AdminMain/AdminMain";
-import AdminUser from "../../page/AdminUser/AdminUser";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import AdminProduct from "./AdminProduct/AdminProduct";
+import AdminMain from "./AdminMain/AdminMain";
+import AdminUser from "./AdminUser/AdminUser";
+import AdminOrder from "./AdminOrder/AdminOrder";
 const { Header, Sider, Content } = Layout;
 
 const LayoutAdmin = () => {
@@ -29,20 +31,18 @@ const LayoutAdmin = () => {
   // const role = useDispatch(state=>state.user.user);
   const isAuth = useSelector((state) => state.user.isAuth);
   const role = useSelector((state) => state.user.user.roleId);
+  const loading = useSelector((state) => state.user.isLoading);
   const navigate = useNavigate();
   const handleMenuClick = (e) => {
     setSelectedKey(e.key);
   };
   useEffect(() => {
-    if (!isAuth) {
-      navigate("/");
+    if (!loading) {
+      if (!isAuth || role !== 1) {
+        navigate("/");
+      }
     }
-    console.log(role);
-    if(role !== 1){
-      navigate("/");
-    }
-  }, [isAuth]);
-
+  }, [isAuth, role,loading]); // Add role to the dependencies array
 
   const renderContent = () => {
     switch (selectedKey) {
@@ -51,9 +51,9 @@ const LayoutAdmin = () => {
       case "2":
         return <AdminUser />;
       case "3":
-        return <div>Layout with content 3</div>;
+        return <AdminProduct />;
       case "4":
-        return <div>Layout with content 4</div>;
+        return <AdminOrder  />;
       default:
         return <div>Content</div>;
     }
