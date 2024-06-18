@@ -9,4 +9,29 @@ body {
       background-color: #fff;
       height: 100%; // Set height to 100%
     }
+    .header_left{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #8f7d5e;
+      font-weight: 600;
+      font-size: 24px;
+    }
+    .logo_img {
+      width: 60px;
+      height: auto;
+      border-radius: 50%;
+    }
+    .header_admin{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0;
+      width: 100%;
+      height: 80px;
+      padding: 0 20px;
+      position: relative;
+      background-color: #fff;
+      box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    }
   }

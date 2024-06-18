@@ -2,7 +2,6 @@ import {
   Drawer,
   Form,
   Input,
-  Select,
   Button,
   Row,
   Col,
@@ -12,13 +11,9 @@ import {
 } from "antd";
 import { useEffect, useState } from "react";
 import {
-  callGetAllRole,
-  callGetCategories,
   callGetSubImages,
-  callUpdateAccount,
   callUpdateProduct,
   callUploadFileProduct,
-  callUploadFileUser,
 } from "../../../service/api";
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 
@@ -29,8 +24,10 @@ const getBase64 = (img, callback) => {
 };
 
 const beforeUpload = (file) => {
-  console.log(file);
-  const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/webp";
+  const isJpgOrPng =
+    file.type === "image/jpeg" ||
+    file.type === "image/png" ||
+    file.type === "image/webp";
   if (!isJpgOrPng) {
     message.error("You can only upload JPG/PNG file!");
   }
@@ -168,7 +165,6 @@ function ModalUpdateProduct({
     ) {
       form.setFieldsValue({ ...product });
       setCategoryId(product.categoryId);
-
       setFile({
         uid: product.id,
         name: product.mainImage,
@@ -221,7 +217,7 @@ function ModalUpdateProduct({
           ...fileList,
           {
             uid: file.uid,
-            name: "/product/" +res.DT.filename,
+            name: "/product/" + res.DT.filename,
             status: "done",
             url:
               import.meta.env.VITE_APP_BE_API_URL +

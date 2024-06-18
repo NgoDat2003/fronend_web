@@ -8,6 +8,14 @@
     max-width: 1200px;
     margin: 0 auto;
   }
+  .category_left {
+    .category_left_container {
+      background-color: #fff;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+    }
+  }
   .main_home {
     margin-top: 20px;
     .product_card {
@@ -54,9 +62,8 @@
           overflow: hidden;
           text-overflow: ellipsis;
           height: 60px;
-          
         }
-        .product_price{
+        .product_price {
           margin-top: 25px;
           padding: 0px;
           opacity: 1;
@@ -69,15 +76,95 @@
           -webkit-box-orient: vertical;
           -webkit-line-clamp: unset;
           transition: color 0.3s ease 0s;
-      
         }
       }
     }
-    .product_pagination{
+    .product_pagination {
       display: flex;
       justify-content: center;
       margin-top: 20px;
       margin-bottom: 20px;
+    }
+  }
+  .category_left_container {
+    display: flex;
+    flex-direction: column;
+    .category_left_title {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1rem;
+    }
+    .category_space {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      &::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 0px;
+        border-top: 1px solid rgb(228, 229, 240);
+        top: 50%;
+        z-index: 0;
+      }
+    }
+    .filter-item {
+      display: flex;
+      flex-direction: column;
+      .raido_list {
+        margin-top: 8px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        > * {
+          flex: 2 1 calc(50% - 8px);
+        }
+      }
+    }
+  }
+  .category_left_mobile {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #f6f6f6;
+    background: rgb(255, 255, 255);
+    padding: 8px 16px;
+    height: 40px;
+    .category_left_mobile-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 13px;
+    }
+
+    .category_left_mobile-right {
+      display: flex;
+      align-items: center;
+      font-size: 13px;
+      color: #333;
+      gap: 7px;
+      cursor: pointer;
+      border-left: 2px solid #ddd;
+    }
+  }
+}
+@media (max-width: 768px) {
+  .home_page {
+    .main_home {
+      .product_card {
+        min-height: 345px;
+      }
+    }
+  }
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  .home_page {
+    .main_home {
+      .product_card {
+        min-height: 375px;
+      }
     }
   }
 }

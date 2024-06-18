@@ -74,7 +74,6 @@ function AdminOrderDetails({ visible, setVisible, order }) {
 
   useEffect(() => {
     if (orderId) {
-      console.log(order);
       form.setFieldsValue({
         id: order.id,
         userId: order.userId,

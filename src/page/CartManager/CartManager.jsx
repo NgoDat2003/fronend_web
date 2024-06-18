@@ -1,5 +1,5 @@
 import "./CartManager.scss";
-import { Row, Col, Tag, Image, Spin } from "antd";
+import { Row, Col, Tag, Image, Spin,Modal } from "antd";
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +10,7 @@ import {
   callGetOrderById,
   callGetOrderDetails,
   callGetProductByID,
+  callUpdateOrder,
 } from "../../service/api";
 
 function CartManager() {
@@ -25,30 +26,12 @@ function CartManager() {
   const [orders, setOrders] = useState([]);
   const [orderDetails, setOrderDetails] = useState([]);
   const [activeStatus, setActiveStatus] = useState("Đang giao hàng");
-
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [currentOrderId, setCurrentOrderId] = useState(null);
+  
   const handleStatusClick = (status) => {
     setActiveStatus(status);
     setOrderDetails([]);
-  };
-  const handleRefesh = () => {
-    const newLimit = 4;
-    const newCurrentPage = 1;
-
-    if (limit !== newLimit) {
-      setLimit(newLimit);
-    }
-
-    if (currentPage !== newCurrentPage) {
-      setCurrentPage(newCurrentPage);
-    }
-    if (sort.field !== "updatedAt" || sort.order !== "desc") {
-      setSort({ field: "updatedAt", order: "desc" });
-      setTableKey(Math.random());
-    }
-
-    if (limit === newLimit && currentPage === newCurrentPage) {
-      getOrder(newCurrentPage, newLimit);
-    }
   };
   const getOrder = async () => {
     let res = await callGetOrderById(
@@ -78,16 +61,19 @@ function CartManager() {
     };
 
     const fetchOrderDetails = async () => {
+      setIsLoading(true);
       if (orders.length > 0) {
         const allOrderDetails = [];
         for (const order of orders) {
           const details = await handleGetOrderDetail(order.id);
           allOrderDetails.push(...details);
         }
+        setIsLoading(false);
         setOrderDetails(allOrderDetails);
+      } else {
+        setIsLoading(false);
       }
     };
-
     fetchOrderDetails();
   }, [orders]);
   const getOrderStatusTag = (status) => {
@@ -96,13 +82,27 @@ function CartManager() {
         return <Tag color="gold">{status}</Tag>;
       case "Đã đặt hàng":
         return <Tag color="green">{status}</Tag>;
-      case "Đã giao":
+      case "Đã giao hàng":
         return <Tag color="blue">{status}</Tag>;
       case "Đã hủy":
         return <Tag color="red">{status}</Tag>;
       default:
         return status;
     }
+  };
+  const showModal = (id) => {
+    setCurrentOrderId(id);
+    setIsModalVisible(true);
+  };
+  const handleCancel =() => {
+    setIsModalVisible(false);
+  };
+  const handleOk = async () => {
+    setIsLoading(true)
+    let res = await callUpdateOrder(currentOrderId, { orderStatus: "Đã hủy" });
+    setIsModalVisible(false);
+    getOrder()
+    setIsLoading(false)
   };
   return (
     <Spin spinning={isLoading}>
@@ -155,14 +155,8 @@ function CartManager() {
                     className="cart-empy"
                   />
                   <span className="cart-empty-text">
-                    Giỏ hàng chưa có sản phẩm nào
+                   Bạn không có đơn hàng nào 
                   </span>
-                  <button
-                    className="btn btn_primary"
-                    onClick={() => navigate("/")}
-                  >
-                    Mua sắm ngay
-                  </button>
                 </div>
               </Col>
             </Row>
@@ -234,7 +228,23 @@ function CartManager() {
                           }
                         })}
                       </div>
-                      <div className="cart_item-footer">
+                      <div
+                        className="cart_item-footer"
+                        style={{
+                          justifyContent:
+                            order.orderStatus === "Đang giao hàng"
+                              ? "space-between"
+                              : "flex-end",
+                        }}
+                      >
+                        {order.orderStatus === "Đang giao hàng" && (
+                          <button
+                            className="btn btn_danger"
+                            onClick={() => showModal(order.id)}
+                          >
+                            Hủy đơn hàng
+                          </button>
+                        )}
                         <span>
                           Tổng đơn hàng:{" "}
                           {(order.orderTotal * 1).toLocaleString("vi-VN")}đ
@@ -247,6 +257,14 @@ function CartManager() {
           )}
         </div>
       </div>
+      <Modal
+        title="Xác nhận"
+        visible={isModalVisible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <p>Bạn có chắc chắn muốn hủy đơn hàng này không?</p>
+      </Modal>
     </Spin>
   );
 }

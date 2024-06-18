@@ -39,8 +39,24 @@ function AdminUser() {
     setUser(record);
   };
   const handleRefesh = () => {
-    setLimit(4);
-    setCurrentPage(1);
+    const newLimit = 4;
+    const newCurrentPage = 1;
+
+    if (limit !== newLimit) {
+      setLimit(newLimit);
+    }
+
+    if (currentPage !== newCurrentPage) {
+      setCurrentPage(newCurrentPage);
+    }
+    if (sort.field !== "updatedAt" || sort.order !== "desc") {
+      setSort({ field: "updatedAt", order: "desc" });
+      setTableKey(Math.random());
+    }
+
+    if (limit === newLimit && currentPage === newCurrentPage) {
+      getUser(newCurrentPage, newLimit);
+    }
   };
   const handleDeleleUser = async (id) => {
     let res = await callDeleteUser(id);

@@ -34,23 +34,37 @@ const beforeUpload = (file) => {
   return isJpgOrPng && isLt2M;
 };
 
-function ModalCreateUser({ visible, setVisible,handleRefesh }) {
+function ModalCreateUser({ visible, setVisible, handleRefesh }) {
   const [form] = Form.useForm();
   const [imageUrl, setImageUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [role, setRole] = useState([]);
   const handleCreateUser = async (
-    email, firstName,lastName,phone, address,roleId,password,imageUrl
+    email,
+    firstName,
+    lastName,
+    phone,
+    address,
+    roleId,
+    password,
+    imageUrl
   ) => {
     let res = await callCreateUser(
-      email, firstName,lastName,phone, address,roleId,password,imageUrl
+      email,
+      firstName,
+      lastName,
+      phone,
+      address,
+      roleId,
+      password,
+      imageUrl
     );
     if (res && +res.EC === 0) {
       setLoading(false);
       form.resetFields();
       message.success(res.EM);
       setVisible(false);
-      handleRefesh()
+      handleRefesh();
     } else {
       form.setFields([
         {
@@ -96,21 +110,25 @@ function ModalCreateUser({ visible, setVisible,handleRefesh }) {
       // Get this url from response in real world.
       getBase64(info.file.originFileObj, (url) => {
         setLoading(false);
-        setImageUrl(imageUrl);
       });
     }
   };
 
-  const uploadButton = (
-    <button style={{ border: 0, background: "none" }} type="button">
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </button>
-  );
-  const handleUpload = async ({ file }) => {
-    let res = await callUploadFileUser(file);
-    if (res && +res.EC === 0) {
-      setImageUrl("/user/" + res.DT.filename);
+  const handleUpload = async ({ file, onSuccess, onError }) => {
+    try {
+      let res = await callUploadFileUser(file);
+      if (res && +res.EC === 0) {
+        setImageUrl({
+          uid: file.uid,
+          name: "/user/" + res.DT.filename,
+        });
+        onSuccess("OK");
+      }
+    } catch (error) {
+      console.error(error);
+      onError("Error");
+    } finally {
+      setLoading(false);
     }
   };
   const handleGetAllRole = async () => {
@@ -271,24 +289,21 @@ function ModalCreateUser({ visible, setVisible,handleRefesh }) {
                 ]}
               >
                 <Upload
+                  multiple={false}
+                  maxCount={1}
                   name="image"
                   listType="picture-circle"
                   className="avatar-uploader"
-                  showUploadList={false}
                   beforeUpload={beforeUpload}
                   onChange={handleChange}
+                  
                   customRequest={handleUpload}
-                  maxCount={1}
+                  
                 >
-                  {imageUrl ? (
-                    <img
-                      src={import.meta.env.VITE_APP_BE_API_URL + imageUrl}
-                      alt="avatar"
-                      style={{ width: "100%" }}
-                    />
-                  ) : (
-                    uploadButton
-                  )}
+                  <div>
+                    {loading ? <LoadingOutlined /> : <PlusOutlined />}
+                    <div style={{ marginTop: 8 }}>Upload</div>
+                  </div>
                 </Upload>
               </Form.Item>
             </Col>

@@ -1,6 +1,6 @@
 import "./Profile.scss";
 import { useSelector } from "react-redux";
-import { Row, Col, Form, Input, Button } from "antd";
+import { Row, Col, Form, Input, Button,message } from "antd";
 import { FaRegUserCircle } from "react-icons/fa";
 import { GoChecklist } from "react-icons/go";
 import { useEffect, useState } from "react";

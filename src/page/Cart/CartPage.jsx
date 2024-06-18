@@ -16,8 +16,8 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { doAddOrder, doRemoveOrder } from "../../redux/OrderSlice";
 import empty_cart from "../../image/empty_cart.png";
-import { callCreateOrder } from "../../service/api";
-
+import { callCreateOrder, callGetPayment } from "../../service/api";
+import { PayPalButton } from "react-paypal-button-v2";
 function CartPage() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const cart = useSelector((state) => state.order.orders);
@@ -30,6 +30,7 @@ function CartPage() {
   const [divider, setDivider] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("cash");
   const [isLoading, setIsLoading] = useState(false);
+  const [sdkReady, setSdkReady] = useState(false);
   const handlePaymentMethodChange = (e) => {
     setPaymentMethod(e.target.value);
   };
@@ -37,25 +38,23 @@ function CartPage() {
     setDeletingItemId(id); // Add this line
     setIsModalVisible(true);
   };
-  console.log(user);
-  const handleCreateOrder = async () => {
+  const handleCreateOrder = async (orderPaymentStatus) => {
     setIsLoading(true);
     let productList = cart.map((item) => ({
       productId: item.id,
       quantity: item.quantity,
       unitPrice: item.price,
-      totalPrice:item.quantity*item.price
+      totalPrice: item.quantity * item.price,
     }));
     const data = {
       userId: user.user.id,
       orderStatus: "Đã đặt hàng",
-      orderPayment: paymentMethod==="cash"?"Tiền mặt":"Chuyển khoản",
+      orderPayment: paymentMethod === "cash" ? "Tiền mặt" : "Chuyển khoản",
       orderTotal: total + divider,
       orderAddress: user.user.address,
-      orderPaymentStatus: "Chưa thanh toán",
+      orderPaymentStatus: orderPaymentStatus || "Chưa thanh toán",
       productList: productList,
     };
-    console.log("Data:", data);
     let res = await callCreateOrder(data);
     if (res && +res.EC === 0) {
       message.success(res.EM);
@@ -109,6 +108,30 @@ function CartPage() {
     handleCreateOrder();
     setCurrent(2);
   };
+  const addPayPalScript = async () => {
+    let res = await callGetPayment();
+    if (res && +res.EC === 0) {
+      const script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = `https://www.paypal.com/sdk/js?client-id=${res.DT}`;
+      script.async = true;
+      script.onload = () => {
+        setSdkReady(true);
+      };
+      document.body.appendChild(script);
+    }
+  };
+  const payPalSuccess = (details, data) => {
+    handleCreateOrder("Đã thanh toán");
+    setCurrent(2);
+  };
+  useEffect(() => {
+    if (!window.paypal) {
+      addPayPalScript();
+    } else {
+      setSdkReady(true);
+    }
+  }, []);
   const steps = [
     {
       title: "Đặt hàng",
@@ -137,7 +160,14 @@ function CartPage() {
             </Row>
           ) : (
             <Row gutter={12}>
-              <Col span={16} className="cart_left">
+              <Col
+                xs={24}
+                sm={24}
+                md={16}
+                lg={16}
+                xl={16}
+                className="cart_left"
+              >
                 <Row gutter={12} className="cart_header">
                   <Col span={4}>Hình ảnh</Col>
                   <Col span={8}>Tên sản phẩm</Col>
@@ -148,57 +178,116 @@ function CartPage() {
                 </Row>
                 <Row gutter={24} className="cart_list">
                   {cart.map((item) => (
-                    <Row key={item.id} gutter={12} className="cart_item">
-                      <Col span={4}>
-                        <Image
-                          src={
-                            import.meta.env.VITE_APP_BE_API_URL + item.imageUrl
-                          }
-                        />
-                      </Col>
-                      <Col span={8} className="cart_item-name">
-                        {item.productName}
-                      </Col>
-                      <Col span={3} className="cart_item-price">
-                        {Number(item.price).toLocaleString("vi-VN")}đ
-                      </Col>
-                      <Col span={3}>
-                        <InputNumber
-                          min={1}
-                          defaultValue={item.quantity}
-                          max={item.maxQuantity}
-                          onChange={(value) =>
-                            handleChangeQuantity(item.id, value)
-                          }
-                        />
-                      </Col>
-                      <Col span={3} className="cart_item-price">
-                        {Number(item.price * item.quantity).toLocaleString(
-                          "vi-VN"
-                        )}
-                        đ
-                      </Col>
-                      <Col span={3}>
-                        <button
-                          className="btn btn_danger"
-                          onClick={() => showModal(item.id)}
-                        >
-                          Xóa
-                        </button>
-                        <Modal
-                          title="Xác nhận"
-                          visible={isModalVisible}
-                          onOk={handleOk}
-                          onCancel={handleCancel}
-                        >
-                          Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?
-                        </Modal>
-                      </Col>
-                    </Row>
+                    <>
+                      <Row
+                        key={item.id}
+                        gutter={[12, 12]}
+                        className="cart_item desktop"
+                      >
+                        <Col span={4}>
+                          <Image
+                            src={
+                              import.meta.env.VITE_APP_BE_API_URL +
+                              item.imageUrl
+                            }
+                          />
+                        </Col>
+                        <Col span={8} className="cart_item-name">
+                          {item.productName}
+                        </Col>
+                        <Col span={3} className="cart_item-price">
+                          {Number(item.price).toLocaleString("vi-VN")}đ
+                        </Col>
+                        <Col span={3}>
+                          <InputNumber
+                            min={1}
+                            defaultValue={item.quantity}
+                            max={item.maxQuantity}
+                            onChange={(value) =>
+                              handleChangeQuantity(item.id, value)
+                            }
+                          />
+                        </Col>
+                        <Col span={3} className="cart_item-price">
+                          {Number(item.price * item.quantity).toLocaleString(
+                            "vi-VN"
+                          )}
+                          đ
+                        </Col>
+                        <Col span={3}>
+                          <button
+                            className="btn btn_danger"
+                            onClick={() => showModal(item.id)}
+                          >
+                            Xóa
+                          </button>
+                          <Modal
+                            title="Xác nhận"
+                            visible={isModalVisible}
+                            onOk={handleOk}
+                            onCancel={handleCancel}
+                          >
+                            Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ
+                            hàng?
+                          </Modal>
+                        </Col>
+                      </Row>
+                      <Row
+                        key={item.id}
+                        gutter={[12, 12]}
+                        className="cart_item mobile"
+                      >
+                        <Col span={8}>
+                          <Image
+                            src={
+                              import.meta.env.VITE_APP_BE_API_URL +
+                              item.imageUrl
+                            }
+                          />
+                        </Col>
+                        <Col span={16}>
+                          <Row gutter={[8, 8]}>
+                            <Col span={24} className="cart_item-name">
+                              {item.productName}
+                            </Col>
+                            <Col span={12} className="cart_item-price">
+                              {Number(item.price).toLocaleString("vi-VN")}đ
+                            </Col>
+                            <Col span={12}>
+                              <InputNumber
+                                min={1}
+                                defaultValue={item.quantity}
+                                max={item.maxQuantity}
+                                onChange={(value) =>
+                                  handleChangeQuantity(item.id, value)
+                                }
+                              />
+                            </Col>
+                            <Col span={4} offset={17}>
+                              <button
+                                className="btn btn_danger"
+                                onClick={() => showModal(item.id)}
+                              >
+                                Xóa
+                              </button>
+                              <Modal
+                                title="Xác nhận"
+                                visible={isModalVisible}
+                                onOk={handleOk}
+                                onCancel={handleCancel}
+                              >
+                                Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ
+                                hàng?
+                              </Modal>
+                            </Col>
+                          </Row>
+                        </Col>
+                      </Row>
+                    </>
                   ))}
                 </Row>
               </Col>
-              <Col span={8} className="cart_right">
+              <Col xs={24} sm={24} md={8} lg={8} xl={8} className="cart_right">
                 <div className="cart_right-container">
                   <h3>Thông tin đơn hàng</h3>
                   <div className="cart_right-content">
@@ -291,18 +380,31 @@ function CartPage() {
                 </div>
                 <span className="span"> (Đã tính phí VAT)</span>
               </div>
-              <button
-                type="primary"
-                className="cart_right-button btn btn_primary"
-                onClick={handlePay1}
-              >
-                Thanh toán
-                {user && user.isAuth ? null : (
-                  <span style={{ display: "block" }}>
-                    Bạn cần đăng nhập để thanh toán
-                  </span>
-                )}
-              </button>
+              {paymentMethod === "paypal" && sdkReady ? (
+                <PayPalButton
+                  amount={Number((Number(total + divider) / 23000).toFixed(2))}
+                  // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
+                  onSuccess={(details, data) =>
+                    payPalSuccess(details, data)
+                  }
+                  onError={(err) => {
+                    console.log(err);
+                  }}
+                />
+              ) : (
+                <button
+                  type="primary"
+                  className="cart_right-button btn btn_primary"
+                  onClick={handlePay1}
+                >
+                  Thanh toán
+                  {user && user.isAuth ? null : (
+                    <span style={{ display: "block" }}>
+                      Bạn cần đăng nhập để thanh toán
+                    </span>
+                  )}
+                </button>
+              )}
             </div>
           </Col>
         </Row>
@@ -310,6 +412,26 @@ function CartPage() {
     },
     {
       title: "Xác Nhận",
+      content: (
+        <Row gutter={[12, 12]} className="cart_left">
+          <Col span={24}>
+            <h2>Đơn hàng của bạn đã được đặt hàng thành công</h2>
+            <p>
+              Đơn hàng của bạn đã được đặt hàng thành công. Vui lòng kiểm tra
+              email để xem thông tin chi tiết của đơn hàng
+            </p>
+          </Col>
+          <Col span={24}>
+            <Button
+              type="primary"
+              className="btn btn_primary"
+              onClick={() => navigate("/")}
+            >
+              Tiếp tục mua sắm
+            </Button>
+          </Col>
+        </Row>
+      ),
     },
   ];
   const items = steps.map((item) => ({

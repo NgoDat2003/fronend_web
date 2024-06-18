@@ -223,7 +223,6 @@ function AdminCreateOrder({ visible, setVisible, handleRefesh }) {
   const handleGetAllProducts = async () => {
     let res = await callGetAllProduct();
     if (res && +res.EC === 0) {
-      console.log(res.DT);
       setProducts(res.DT);
       setOptions(
         res.DT.map((product) => ({
@@ -269,7 +268,6 @@ function AdminCreateOrder({ visible, setVisible, handleRefesh }) {
         orderPaymentStatus: formData.orderPaymentStatus,
         productList: productList,
       };
-      console.log("Data:", data);
       let res = await callCreateOrder(data);
       if (res && +res.EC === 0) {
         message.success(res.EM);

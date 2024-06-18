@@ -143,7 +143,6 @@ function AdminUpdateOrder({
     try {
       setIsChange(false);
       const formData = await form.validateFields();
-      console.log("formData", formData);
       let res = await callUpdateOrder(formData.id, {
         orderStatus: formData.orderStatus,
         orderPaymentStatus: formData.orderPaymentStatus,

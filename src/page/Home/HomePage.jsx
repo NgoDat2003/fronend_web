@@ -43,7 +43,6 @@ const HomePage = () => {
     // fetchProducts(current, size);
   };
   const onClick = (e) => {
-    console.log("click", e);
   };
   return (
     <div className="home_page">
@@ -55,7 +54,7 @@ const HomePage = () => {
           <Col span={24}>
             <Row gutter={[16, 8]}>
               {products.map((item, index) => (
-                <Col span={6} className="product_card" key={index}>
+                <Col xs={12} sm={12} md={8} lg={6} xl={6} className="product_card" key={index}>
                   <NavLink to={`/product/${item.id}`} className="product_link">
                     <Card
                       hoverable

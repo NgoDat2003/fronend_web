@@ -15,7 +15,6 @@ function Product() {
   const getProductByID = async () => {
     let res = await callGetProductByID(id);
     if (res && +res.EC === 0) {
-      console.log(res.DT);
       setProduct(res.DT);
       setMainImage(res.DT.mainImage);
       setImages([...res.DT.Images, { imageUrl: res.DT.mainImage }]);
@@ -33,14 +32,13 @@ function Product() {
       quantity: quantity,
       maxQuantity: product.stockQuantity,
     };
-    console.log(payload);
     dispatch(doAddOrder(payload));
   };
   return (
     <div className="product">
       <div className="container">
         <Row gutter={16}>
-          <Col span={10}>
+          <Col xs={24} sm={24} md={10} lg={10} xl={10}>
             <div className="product_image">
               <Row>
                 <Col span={24} className="product_image_main">
@@ -79,7 +77,7 @@ function Product() {
               </Row>
             </div>
           </Col>
-          <Col span={14}>
+          <Col xs={24} sm={24} md={14} lg={14} xl={14}>
             <div className="product_info">
               <h1 className="product_name">
                 {product.productName || "Tên sản phẩm"}

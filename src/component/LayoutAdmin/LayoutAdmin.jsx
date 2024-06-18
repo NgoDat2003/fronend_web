@@ -6,7 +6,7 @@ import {
   UserOutlined,
   VideoCameraOutlined,
 } from "@ant-design/icons";
-import { Button, Layout, Menu } from "antd";
+import { Button, Layout, Menu, Image } from "antd";
 import "./LayoutAdmin.scss";
 import logo from "../../image/logo.png";
 import { Col, Row } from "antd";
@@ -27,6 +27,7 @@ const { Header, Sider, Content } = Layout;
 const LayoutAdmin = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKey, setSelectedKey] = useState("1");
+  const name = useSelector((state) => state.user.user.lastName);
   // const isAuth = useDispatch(state=>state.user.isAuth);
   // const role = useDispatch(state=>state.user.user);
   const isAuth = useSelector((state) => state.user.isAuth);
@@ -42,7 +43,7 @@ const LayoutAdmin = () => {
         navigate("/");
       }
     }
-  }, [isAuth, role,loading]); // Add role to the dependencies array
+  }, [isAuth, role, loading]); // Add role to the dependencies array
 
   const renderContent = () => {
     switch (selectedKey) {
@@ -53,7 +54,7 @@ const LayoutAdmin = () => {
       case "3":
         return <AdminProduct />;
       case "4":
-        return <AdminOrder  />;
+        return <AdminOrder />;
       default:
         return <div>Content</div>;
     }
@@ -63,20 +64,23 @@ const LayoutAdmin = () => {
       className="container_layout"
       style={{ height: "100vh", width: "100%" }}
     >
-      <Header style={{ padding: 0 }}>
-        <Row>
-          <Col span={4}>
-            <NavLink
-              to="/"
-              style={{ display: "flex", alignItems: "center", gap: 10 }}
-            >
-              <img className="logo_img" src={logo} alt="" />{" "}
-              <span>Tên Logo</span>
-            </NavLink>
-          </Col>
-        </Row>
+      <Header className="header_admin">
+        <div className="header__logo">
+          <NavLink to="/" className="header_left">
+            <Image
+              className="logo_img"
+              preview={false}
+              // width={200}
+              src={logo}
+            />
+            <span>Electronic Shop </span>
+          </NavLink>
+        </div>
+        <div className="header__right">
+          <span>Hello, {name}</span>
+        </div>
       </Header>
-      <Layout>
+      <Layout className="layout">
         <Sider
           trigger={null}
           width={collapsed ? 80 : 250}

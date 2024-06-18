@@ -6,7 +6,7 @@ import Slider_4 from "../../image/slider_4.png";
 const contentStyle = {
   objectFit: "cover",
   width: "100%",
-  height: "566px",
+  height: "auto",
 };
 const CaroselHomePage = () => {
 
@@ -15,6 +15,7 @@ const CaroselHomePage = () => {
     <Carousel
       autoplay
       draggable
+      
     >
       <div>
         <img src={Slider_1} alt="" style={contentStyle} />

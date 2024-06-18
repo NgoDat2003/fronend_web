@@ -80,14 +80,22 @@ export const callGetUserBySearch = (value) => {
 };
 export const callGetAllUser = () => {
   return axios.get("/api/v1/user");
-}
-// product
-export const callGetProducts = (limit, currentPage,sort, order) => {
-  return axios.get("/api/v1/product/read", { params: { limit, currentPage,sort,order } });
 };
-export const callGetProductsByCategory = (id, limit, currentPage,sort, order) => {
+// product
+export const callGetProducts = (limit, currentPage, sort, order) => {
+  return axios.get("/api/v1/product/read", {
+    params: { limit, currentPage, sort, order },
+  });
+};
+export const callGetProductsByCategory = (
+  id,
+  limit,
+  currentPage,
+  sort,
+  order
+) => {
   return axios.get("/api/v1/product/readByCategory", {
-    params: { id,limit, currentPage,sort,order },
+    params: { id, limit, currentPage, sort, order },
   });
 };
 export const callGetProductByID = (id) => {
@@ -103,6 +111,47 @@ export const callUploadFileProduct = (file) => {
   return axios.post("/api/v1/upload/product", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
+    },
+  });
+};
+export const callFilterProduct = (
+  screenBrand,
+  screenSize,
+  resolution,
+  panelType,
+  pcBrand,
+  cpuSeries,
+  ramSize,
+  laptopBrand,
+  color,
+  laptopCpuSeries,
+  audioBrand,
+  microphoneType,
+  minPrice,
+  maxPrice,
+  id,
+  limit,
+  currentPage
+) => {
+  return axios.get("/api/v1/category/filter", {
+    params: {
+      screenBrand,
+      screenSize,
+      resolution,
+      panelType,
+      pcBrand,
+      cpuSeries,
+      ramSize,
+      laptopBrand,
+      color,
+      laptopCpuSeries,
+      audioBrand,
+      microphoneType,
+      minPrice,
+      maxPrice,
+      id,
+      limit,
+      currentPage,
     },
   });
 };
@@ -199,6 +248,10 @@ export const callDeleteProduct = (id) => {
 export const callGetAllProduct = () => {
   return axios.get("/api/v1/product/readAll");
 };
+
+export const callGetProductSearch = (search) => {
+  return axios.get("/api/v1/product/search?search=" + search);
+};
 // order
 export const callGetOrders = (limit, currentPage, sort, order) => {
   return axios.get("/api/v1/order/read", {
@@ -208,13 +261,21 @@ export const callGetOrders = (limit, currentPage, sort, order) => {
 export const callCreateOrder = (order) => {
   return axios.post("/api/v1/order/create", order);
 };
-export const callUpdateOrder = (id,order) => {
-  return axios.put("/api/v1/order/update/"+id, order);
+export const callUpdateOrder = (id, order) => {
+  return axios.put("/api/v1/order/update/" + id, order);
 };
-export const callGetOrderById = (limit,currentPage,sort,order,id,orderStatus)=>{
-  return axios.get("/api/v1/order/readbyid",{params:{limit,currentPage,sort,order,id,orderStatus}});
-
-}
+export const callGetOrderById = (
+  limit,
+  currentPage,
+  sort,
+  order,
+  id,
+  orderStatus
+) => {
+  return axios.get("/api/v1/order/readbyid", {
+    params: { limit, currentPage, sort, order, id, orderStatus },
+  });
+};
 //order details
 export const callGetOrderDetails = (id) => {
   return axios.get("/api/v1/orderDetail/read/" + id);
@@ -227,4 +288,12 @@ export const callGetSubImages = (id) => {
 // category
 export const callGetCategories = () => {
   return axios.get("/api/v1/category/read");
+};
+//statistic
+export const callGetStatisInfo = () => {
+  return axios.get("/api/v1/statistic");
+};
+// payment
+export const callGetPayment = () => {
+  return axios.get("/api/v1/payment/config");
 };
