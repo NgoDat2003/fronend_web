@@ -1,5 +1,5 @@
 import { Carousel } from "antd";
-import Slider_1 from "../../image/Slider_1.png";
+import Slider_1 from "../../image/slider_1.png";
 import Slider_2 from "../../image/slider_2.png";
 import Slider_3 from "../../image/slider_3.png";
 import Slider_4 from "../../image/slider_4.png";
