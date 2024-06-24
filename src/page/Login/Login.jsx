@@ -44,7 +44,7 @@ function Login() {
         <Row className="login_row">
           <Col span={16} className="login_left">
             <h3>Xin chào</h3>
-            <p>Đăng nhập hoặc Tạo tài khoản</p>
+            <p>Đăng nhập hoặc Tạo tài khoản <br></br> (user: admin@gmail.com, password:123456)</p>
             <Form
               name="wrap"
               labelCol={{ flex: "110px" }}
