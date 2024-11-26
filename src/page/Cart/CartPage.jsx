@@ -17,7 +17,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { doAddOrder, doRemoveOrder } from "../../redux/OrderSlice";
 import empty_cart from "../../image/empty_cart.png";
 import { callCreateOrder, callGetPayment } from "../../service/api";
-import { PayPalButton } from "react-paypal-button-v2";
 function CartPage() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const cart = useSelector((state) => state.order.orders);
@@ -381,16 +380,17 @@ function CartPage() {
                 <span className="span"> (Đã tính phí VAT)</span>
               </div>
               {paymentMethod === "paypal" && sdkReady ? (
-                <PayPalButton
-                  amount={Number((Number(total + divider) / 23000).toFixed(2))}
-                  // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
-                  onSuccess={(details, data) =>
-                    payPalSuccess(details, data)
-                  }
-                  onError={(err) => {
-                    console.log(err);
-                  }}
-                />
+                // <PayPalButton
+                //   amount={Number((Number(total + divider) / 23000).toFixed(2))}
+                //   // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
+                //   onSuccess={(details, data) =>
+                //     payPalSuccess(details, data)
+                //   }
+                //   onError={(err) => {
+                //     console.log(err);
+                //   }}
+                // />
+                <></>
               ) : (
                 <button
                   type="primary"
